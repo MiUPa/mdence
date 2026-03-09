@@ -53,6 +53,12 @@ export const ApplyTextEditsMessageSchema = z.object({
   reason: z.enum(['typing', 'drag', 'paste', 'format']),
 });
 
+export const ReplaceDocumentMessageSchema = z.object({
+  type: z.literal('REPLACE_DOCUMENT'),
+  text: z.string().max(10_000_000),
+  reason: z.enum(['typing', 'drag', 'paste', 'format']),
+});
+
 export const WriteAssetMessageSchema = z.object({
   type: z.literal('WRITE_ASSET'),
   dataUri: z.string().max(50_000_000), // 50MB limit for data URIs
@@ -68,6 +74,7 @@ export const RequestSettingsMessageSchema = z.object({
 });
 
 export const UIToHostMessageSchema = z.discriminatedUnion('type', [
+  ReplaceDocumentMessageSchema,
   ApplyTextEditsMessageSchema,
   WriteAssetMessageSchema,
   RequestInitMessageSchema,
@@ -132,6 +139,7 @@ export type HostToUIMessage = z.infer<typeof HostToUIMessageSchema>;
 
 // Individual message types
 export type ApplyTextEditsMessage = z.infer<typeof ApplyTextEditsMessageSchema>;
+export type ReplaceDocumentMessage = z.infer<typeof ReplaceDocumentMessageSchema>;
 export type WriteAssetMessage = z.infer<typeof WriteAssetMessageSchema>;
 export type RequestInitMessage = z.infer<typeof RequestInitMessageSchema>;
 export type RequestSettingsMessage = z.infer<typeof RequestSettingsMessageSchema>;

@@ -4,6 +4,7 @@
 
 - Replaced the extension icon with original MDence branding
 - Updated repository and issue tracker links to the public GitHub repository
+- Reworked document sync to serialize full-document updates and avoid markdown corruption during rapid edits
 
 ## 0.3.0
 
