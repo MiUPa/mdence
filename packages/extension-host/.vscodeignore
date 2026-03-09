@@ -1,0 +1,15 @@
+# Ignore everything
+**/*
+
+# Include only these
+!package.json
+!LICENSE
+!README.md
+!CHANGELOG.md
+!dist/**
+!media/**
+
+# But exclude source maps
+dist/**/*.map
+media/icon-source.svg
+media/icon-source.svg.png

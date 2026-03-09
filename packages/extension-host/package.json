@@ -1,0 +1,272 @@
+{
+  "name": "mdence",
+  "icon": "media/icon.png",
+  "displayName": "MDence — Confluence-Like Markdown Editor",
+  "description": "A block-based Markdown editor with a Confluence-like editing experience",
+  "publisher": "miupa",
+  "galleryBanner": {
+    "color": "#161617",
+    "theme": "dark"
+  },
+  "version": "0.3.1",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other",
+    "Formatters",
+    "Visualization"
+  ],
+  "keywords": [
+    "markdown",
+    "wysiwyg",
+    "wiki",
+    "block-editor",
+    "documentation",
+    "md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MiUPa/mdence"
+  },
+  "bugs": {
+    "url": "https://github.com/MiUPa/mdence/issues"
+  },
+  "homepage": "https://github.com/MiUPa/mdence",
+  "license": "MIT",
+  "main": "./dist/extension.js",
+  "activationEvents": [],
+  "contributes": {
+    "customEditors": [
+      {
+        "viewType": "mdence.editor",
+        "displayName": "MDence — Confluence-Like Markdown Editor",
+        "selector": [
+          {
+            "filenamePattern": "*.md"
+          },
+          {
+            "filenamePattern": "*.markdown"
+          }
+        ],
+        "priority": "default"
+      }
+    ],
+    "commands": [
+      {
+        "command": "mdence.openAsText",
+        "title": "Open as Raw Markdown",
+        "category": "MDence",
+        "icon": {
+          "light": "media/code-light.svg",
+          "dark": "media/code-dark.svg"
+        }
+      },
+      {
+        "command": "mdence.openAsMDence",
+        "title": "Open as MDence",
+        "category": "MDence",
+        "icon": {
+          "light": "media/blocks-light.svg",
+          "dark": "media/blocks-dark.svg"
+        }
+      },
+      {
+        "command": "mdence.copyContent",
+        "title": "Copy Markdown Content",
+        "category": "MDence",
+        "icon": {
+          "light": "media/copy-light.svg",
+          "dark": "media/copy-dark.svg"
+        }
+      },
+      {
+        "command": "mdence.insertBlock",
+        "title": "Insert Block…",
+        "category": "MDence"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "mdence.copyContent",
+          "when": "activeCustomEditorId == mdence.editor",
+          "group": "navigation"
+        },
+        {
+          "command": "mdence.openAsText",
+          "when": "activeCustomEditorId == mdence.editor",
+          "group": "navigation"
+        },
+        {
+          "command": "mdence.copyContent",
+          "when": "resourceLangId == markdown && activeCustomEditorId != mdence.editor",
+          "group": "navigation"
+        },
+        {
+          "command": "mdence.openAsMDence",
+          "when": "resourceLangId == markdown && activeCustomEditorId != mdence.editor",
+          "group": "navigation"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "MDence",
+      "properties": {
+        "mdence.assets.folder": {
+          "type": "string",
+          "default": "assets",
+          "description": "Relative folder for pasted/dragged images."
+        },
+        "mdence.assets.imagePathResolution": {
+          "type": "string",
+          "enum": [
+            "document",
+            "workspace"
+          ],
+          "default": "document",
+          "description": "How to resolve relative image paths in markdown.",
+          "enumDescriptions": [
+            "Resolve paths relative to the markdown file's directory (recommended, matches standard markdown behavior)",
+            "Resolve paths relative to the workspace root"
+          ]
+        },
+        "mdence.format.wrap": {
+          "type": "integer",
+          "default": 0,
+          "description": "Markdown wrap width (0 = no wrap)."
+        },
+        "mdence.callouts.style": {
+          "type": "string",
+          "enum": [
+            "admonition",
+            "emoji"
+          ],
+          "default": "admonition",
+          "description": "Style for callout blocks."
+        },
+        "mdence.toggles.syntax": {
+          "type": "string",
+          "enum": [
+            "details",
+            "list"
+          ],
+          "default": "details",
+          "description": "Syntax for toggle blocks."
+        },
+        "mdence.math.enabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable math block support."
+        },
+        "mdence.mermaid.enabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable Mermaid diagram support."
+        },
+        "mdence.theme.codeTheme": {
+          "type": "string",
+          "enum": [
+            "auto",
+            "dark",
+            "light",
+            "github-dark",
+            "github-light",
+            "monokai"
+          ],
+          "default": "auto",
+          "description": "Syntax highlighting theme for code blocks. 'auto' follows your VS Code theme.",
+          "enumDescriptions": [
+            "Automatically match your VS Code theme (dark or light)",
+            "Dark theme (VS Code Dark+)",
+            "Light theme (VS Code Light+)",
+            "GitHub Dark theme",
+            "GitHub Light theme",
+            "Monokai theme"
+          ]
+        },
+        "mdence.theme.headingColor": {
+          "type": "string",
+          "default": "",
+          "description": "Custom color for all headings. Can be overridden per level with h1Color through h5Color."
+        },
+        "mdence.theme.h1Color": {
+          "type": "string",
+          "default": "",
+          "description": "Custom color for H1 headings. Overrides headingColor for H1."
+        },
+        "mdence.theme.h2Color": {
+          "type": "string",
+          "default": "",
+          "description": "Custom color for H2 headings. Overrides headingColor for H2."
+        },
+        "mdence.theme.h3Color": {
+          "type": "string",
+          "default": "",
+          "description": "Custom color for H3 headings. Overrides headingColor for H3."
+        },
+        "mdence.theme.h4Color": {
+          "type": "string",
+          "default": "",
+          "description": "Custom color for H4 headings. Overrides headingColor for H4."
+        },
+        "mdence.theme.h5Color": {
+          "type": "string",
+          "default": "",
+          "description": "Custom color for H5 headings. Overrides headingColor for H5."
+        },
+        "mdence.theme.h1Indent": {
+          "type": "string",
+          "default": "",
+          "description": "Left indent for H1 headings (e.g., '16px' or '1em')."
+        },
+        "mdence.theme.h2Indent": {
+          "type": "string",
+          "default": "",
+          "description": "Left indent for H2 headings (e.g., '16px' or '1em')."
+        },
+        "mdence.theme.h3Indent": {
+          "type": "string",
+          "default": "",
+          "description": "Left indent for H3 headings (e.g., '32px' or '2em')."
+        },
+        "mdence.theme.h4Indent": {
+          "type": "string",
+          "default": "",
+          "description": "Left indent for H4 headings (e.g., '48px' or '3em')."
+        },
+        "mdence.theme.h5Indent": {
+          "type": "string",
+          "default": "",
+          "description": "Left indent for H5 headings (e.g., '64px' or '4em')."
+        },
+        "mdence.theme.boldColor": {
+          "type": "string",
+          "default": "",
+          "description": "Custom color for bold text (e.g., '#d19a66' or 'orange'). Leave empty to use default."
+        },
+        "mdence.theme.italicColor": {
+          "type": "string",
+          "default": "",
+          "description": "Custom color for italic text (e.g., '#98c379' or 'green'). Leave empty to use default."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "tsup src/extension.ts --format cjs --dts --outDir dist --external vscode",
+    "dev": "tsup src/extension.ts --format cjs --watch --outDir dist --external vscode",
+    "lint": "eslint src",
+    "package": "rm -rf .vsce-pkg && mkdir -p .vsce-pkg && cp -r package.json LICENSE README.md CHANGELOG.md .vscodeignore dist media .vsce-pkg/ && rm -f .vsce-pkg/dist/*.map && cd .vsce-pkg && vsce package --no-dependencies -o ../mdence.vsix && cd .. && rm -rf .vsce-pkg",
+    "publish": "npm run package && vsce publish --packagePath mdence.vsix",
+    "prepublishOnly": "npm run build"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^3.0.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.4.0",
+    "zod": "^4.1.13"
+  }
+}
