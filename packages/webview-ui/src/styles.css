@@ -772,6 +772,7 @@ body {
   position: fixed;
   min-width: 280px;
   max-height: 320px;
+  max-height: min(320px, calc(100vh - 8px));
   display: flex;
   flex-direction: column;
   background: var(--vscode-background);

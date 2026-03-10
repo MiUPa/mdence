@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.2
+
+- Improved Markdown import for paragraphs that mix text and images
+- Kept the slash-command menu inside the viewport on shorter screens and near the bottom of long documents
+
 ## 0.3.1
 
 - Replaced the extension icon with original MDence branding
