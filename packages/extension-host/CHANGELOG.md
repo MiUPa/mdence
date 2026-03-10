@@ -4,6 +4,7 @@
 
 - Improved Markdown import for paragraphs that mix text and images
 - Kept the slash-command menu inside the viewport on shorter screens and near the bottom of long documents
+- Added a safer prompt and command for setting MDence as the default Markdown editor without copying workspace associations into global settings
 
 ## 0.3.1
 

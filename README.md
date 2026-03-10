@@ -54,6 +54,12 @@ Type `/` to insert headings, lists, code blocks, tables, callouts, toggles, divi
 - Save pasted images into your configured assets folder
 - Follow the active VS Code light or dark theme automatically
 
+### Default Editor Prompt
+
+- Prompt once on startup to let users set MDence as the default editor for `.md` and `.markdown`
+- Respect existing editor associations instead of overwriting them
+- Keep a command available for users who want to enable it later
+
 ## Settings
 
 MDence currently exposes these main settings:
@@ -68,6 +74,13 @@ MDence currently exposes these main settings:
 - `mdence.theme.h1Indent` through `mdence.theme.h5Indent`
 - `mdence.theme.boldColor`
 - `mdence.theme.italicColor`
+
+## Commands
+
+- `MDence: Open as Raw Markdown`
+- `MDence: Open as MDence`
+- `MDence: Copy Markdown Content`
+- `MDence: Set as Default Markdown Editor`
 
 ## Repository Layout
 

@@ -58,6 +58,10 @@ Paste or drag images directly into the editor. MDence automatically saves them t
 
 MDence respects your VS Code color theme — light, dark, or high contrast.
 
+### Default Editor Prompt
+
+On first startup, MDence can offer to become the default editor for Markdown files. If you skip that prompt, you can always run the command below later.
+
 #### Code Block Themes
 
 By default, code block syntax highlighting automatically adapts to your VS Code theme (light or dark). You can also choose a specific theme:
@@ -108,6 +112,7 @@ Leave any setting empty to use the default.
 - **MDence: Open as Raw Markdown** — Switch to the plain text editor
 - **MDence: Open as MDence** — Open a Markdown file in MDence
 - **MDence: Copy Markdown Content** — Copy the document to clipboard
+- **MDence: Set as Default Markdown Editor** — Save MDence as your global default for `.md` and `.markdown`
 
 ## Settings
 

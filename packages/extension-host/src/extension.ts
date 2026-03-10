@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { MDenceEditorProvider } from './customEditor';
-import { registerCommands } from './commands';
+import { promptToSetDefaultMarkdownEditor, registerCommands } from './commands';
 
 export function activate(context: vscode.ExtensionContext): void {
   // Register the custom editor provider
@@ -8,6 +8,8 @@ export function activate(context: vscode.ExtensionContext): void {
 
   // Register commands
   registerCommands(context);
+
+  void promptToSetDefaultMarkdownEditor(context);
 
   console.log('MDence extension activated');
 }
