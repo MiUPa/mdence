@@ -31,6 +31,13 @@ export function applyTextEdits(
   postMessage({ type: 'APPLY_TEXT_EDITS', edits, reason });
 }
 
+export function replaceDocumentText(
+  text: string,
+  reason: 'typing' | 'drag' | 'paste' | 'format'
+): void {
+  postMessage({ type: 'REPLACE_DOCUMENT', text, reason });
+}
+
 export function writeAsset(dataUri: string, suggestedName?: string): void {
   postMessage({ type: 'WRITE_ASSET', dataUri, suggestedName });
 }

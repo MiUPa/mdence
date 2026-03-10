@@ -59,13 +59,65 @@ export class MDenceEditorProvider implements vscode.CustomTextEditorProvider {
     console.log('MDence: Setting webview HTML, length:', html.length);
     webviewPanel.webview.html = html;
 
-    // Track if we're currently applying edits from the webview
+    // Track if we're currently applying edits from the webview and serialize writes.
     let isApplyingEdits = false;
+    let lastSentContent = document.getText();
+    let pendingReplacementText: string | null = null;
+    let applyReplacementQueue = Promise.resolve();
+
+    const enqueueDocumentReplacement = (text: string) => {
+      pendingReplacementText = text;
+      applyReplacementQueue = applyReplacementQueue
+        .then(async () => {
+          while (pendingReplacementText !== null) {
+            const nextText = pendingReplacementText;
+            pendingReplacementText = null;
+
+            if (document.getText() === nextText) {
+              lastSentContent = nextText;
+              continue;
+            }
+
+            isApplyingEdits = true;
+            try {
+              const currentText = document.getText();
+              const fullRange = new vscode.Range(
+                document.positionAt(0),
+                document.positionAt(currentText.length)
+              );
+              const edit = new vscode.WorkspaceEdit();
+              edit.replace(document.uri, fullRange, nextText);
+
+              const applied = await vscode.workspace.applyEdit(edit);
+              if (!applied) {
+                webviewPanel.webview.postMessage({
+                  type: 'ERROR',
+                  message: 'Failed to update the Markdown document.',
+                });
+                continue;
+              }
+
+              lastSentContent = nextText;
+            } finally {
+              isApplyingEdits = false;
+            }
+          }
+        })
+        .catch((error) => {
+          isApplyingEdits = false;
+          console.error('MDence: Failed to apply document replacement:', error);
+          webviewPanel.webview.postMessage({
+            type: 'ERROR',
+            message: error instanceof Error ? error.message : 'Failed to update the Markdown document.',
+          });
+        });
+    };
 
     // Send document content to webview
     const sendDocumentToWebview = () => {
       const text = document.getText();
       console.log('MDence: Sending DOC_INIT to webview, text length:', text.length);
+      lastSentContent = text;
 
       // Generate base URI for resolving relative asset paths (workspace root)
       let assetBaseUri: string | undefined;
@@ -125,25 +177,35 @@ export class MDenceEditorProvider implements vscode.CustomTextEditorProvider {
             break;
           }
 
+          case 'REPLACE_DOCUMENT':
+            enqueueDocumentReplacement(message.text);
+            break;
+
           case 'APPLY_TEXT_EDITS':
             if (message.edits && message.edits.length > 0) {
               isApplyingEdits = true;
-              const edit = new vscode.WorkspaceEdit();
+              try {
+                const edit = new vscode.WorkspaceEdit();
 
-              for (const textEdit of message.edits) {
-                // Additional validation: ensure end >= start
-                if (textEdit.end < textEdit.start) {
-                  console.error('MDence: Invalid edit range: end < start');
-                  continue;
+                for (const textEdit of message.edits) {
+                  // Additional validation: ensure end >= start
+                  if (textEdit.end < textEdit.start) {
+                    console.error('MDence: Invalid edit range: end < start');
+                    continue;
+                  }
+                  const startPos = document.positionAt(textEdit.start);
+                  const endPos = document.positionAt(textEdit.end);
+                  const range = new vscode.Range(startPos, endPos);
+                  edit.replace(document.uri, range, textEdit.newText);
                 }
-                const startPos = document.positionAt(textEdit.start);
-                const endPos = document.positionAt(textEdit.end);
-                const range = new vscode.Range(startPos, endPos);
-                edit.replace(document.uri, range, textEdit.newText);
-              }
 
-              await vscode.workspace.applyEdit(edit);
-              isApplyingEdits = false;
+                const applied = await vscode.workspace.applyEdit(edit);
+                if (applied) {
+                  lastSentContent = document.getText();
+                }
+              } finally {
+                isApplyingEdits = false;
+              }
             }
             break;
 
@@ -177,9 +239,6 @@ export class MDenceEditorProvider implements vscode.CustomTextEditorProvider {
         }
       }
     );
-
-    // Track last sent content to avoid duplicate sends
-    let lastSentContent = document.getText();
 
     // Handle external document changes
     const changeDocumentSubscription = vscode.workspace.onDidChangeTextDocument((e) => {

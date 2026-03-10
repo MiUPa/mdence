@@ -23,6 +23,12 @@ export const TextEditSchema = z.object({
   newText: z.string().max(10_000_000),
 });
 
+export const ReplaceDocumentMessageSchema = z.object({
+  type: z.literal('REPLACE_DOCUMENT'),
+  text: z.string().max(10_000_000),
+  reason: z.enum(['typing', 'drag', 'paste', 'format']),
+});
+
 // Code theme options
 export const CodeThemeSchema = z.enum(['auto', 'dark', 'light', 'github-dark', 'github-light', 'monokai']);
 
@@ -113,6 +119,7 @@ export type HostToUIMessage = z.infer<typeof HostToUIMessageSchema>;
 
 // UI → Host messages (outgoing, don't need validation)
 export type UIToHostMessage =
+  | z.infer<typeof ReplaceDocumentMessageSchema>
   | { type: 'APPLY_TEXT_EDITS'; edits: TextEdit[]; reason: 'typing' | 'drag' | 'paste' | 'format' }
   | { type: 'WRITE_ASSET'; dataUri: string; suggestedName?: string }
   | { type: 'REQUEST_INIT' }

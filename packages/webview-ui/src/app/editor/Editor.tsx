@@ -261,6 +261,10 @@ export function Editor({ initialContent, onChange, assetBaseUri, documentDirUri,
     };
   }, []);
 
+  useEffect(() => {
+    currentContentRef.current = initialContent;
+  }, [initialContent]);
+
   const handleChange = useCallback(
     (editorState: EditorState, editor: LexicalEditor) => {
       // Store the latest editor for debounced processing

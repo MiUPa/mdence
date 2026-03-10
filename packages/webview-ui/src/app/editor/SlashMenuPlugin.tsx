@@ -152,6 +152,11 @@ export function SlashMenuPlugin() {
           left = Math.max(padding, window.innerWidth - menuWidth - padding);
         }
 
+        const maxTop = Math.max(padding, window.innerHeight - menuHeight - padding);
+        const maxLeft = Math.max(padding, window.innerWidth - menuWidth - padding);
+        top = Math.min(Math.max(padding, top), maxTop);
+        left = Math.min(Math.max(padding, left), maxLeft);
+
         const newPosition = { top, left };
 
         // Only update state if something changed

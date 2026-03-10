@@ -163,7 +163,7 @@ function preprocessDetailsBlocks(children: Content[]): (Content | ToggleContentM
 function convertBlockNode(node: Content): LexicalBlockNode[] {
   switch (node.type) {
     case 'paragraph':
-      return [convertParagraph(node)];
+      return convertParagraph(node);
     case 'heading':
       return [convertHeading(node)];
     case 'blockquote':
@@ -186,26 +186,65 @@ function convertBlockNode(node: Content): LexicalBlockNode[] {
   }
 }
 
-function convertParagraph(node: Paragraph): ParagraphNode | ImageNode {
-  // Check if this is just an image - return ImageNode directly
+function convertParagraph(node: Paragraph): (ParagraphNode | ImageNode)[] {
+  // Preserve image-only paragraphs as standalone image blocks.
   if (
     node.children.length === 1 &&
     node.children[0].type === 'image'
   ) {
     const img = node.children[0] as Image;
-    return $createImageNode(img.url, img.alt || '', img.title ?? undefined);
+    return [$createImageNode(img.url, img.alt || '', img.title ?? undefined)];
   }
 
-  const paragraph = $createParagraphNode();
+  const hasDirectImageChild = node.children.some((child) => child.type === 'image');
+  if (!hasDirectImageChild) {
+    const paragraph = $createParagraphNode();
+
+    for (const child of node.children) {
+      const nodes = convertInlineNode(child);
+      for (const n of nodes) {
+        paragraph.append(n);
+      }
+    }
+
+    return [paragraph];
+  }
+
+  const result: (ParagraphNode | ImageNode)[] = [];
+  let currentParagraph: ParagraphNode | null = null;
+
+  const flushParagraph = () => {
+    if (currentParagraph && currentParagraph.getChildrenSize() > 0) {
+      result.push(currentParagraph);
+    }
+    currentParagraph = null;
+  };
 
   for (const child of node.children) {
+    if (child.type === 'image') {
+      flushParagraph();
+      const img = child as Image;
+      result.push($createImageNode(img.url, img.alt || '', img.title ?? undefined));
+      continue;
+    }
+
+    if (!currentParagraph) {
+      currentParagraph = $createParagraphNode();
+    }
+
     const nodes = convertInlineNode(child);
     for (const n of nodes) {
-      paragraph.append(n);
+      currentParagraph.append(n);
     }
   }
 
-  return paragraph;
+  flushParagraph();
+
+  if (result.length === 0) {
+    return [$createParagraphNode()];
+  }
+
+  return result;
 }
 
 function convertHeading(node: Heading): HeadingNode {

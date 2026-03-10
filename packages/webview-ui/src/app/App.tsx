@@ -3,42 +3,10 @@ import { Editor } from './editor';
 import {
   addMessageHandler,
   requestInit,
-  applyTextEdits,
+  replaceDocumentText,
   writeAsset,
 } from '../messaging';
-import type { HostToUIMessage, MDenceSettings, TextEdit, ThemeOverrides } from '../types';
-
-// Simple diff algorithm to find the changed region between two strings
-function computeMinimalEdits(oldText: string, newText: string): TextEdit[] {
-  if (oldText === newText) return [];
-
-  // Find common prefix
-  let prefixLen = 0;
-  const minLen = Math.min(oldText.length, newText.length);
-  while (prefixLen < minLen && oldText[prefixLen] === newText[prefixLen]) {
-    prefixLen++;
-  }
-
-  // Find common suffix (but don't overlap with prefix)
-  let suffixLen = 0;
-  while (
-    suffixLen < minLen - prefixLen &&
-    oldText[oldText.length - 1 - suffixLen] === newText[newText.length - 1 - suffixLen]
-  ) {
-    suffixLen++;
-  }
-
-  // Calculate the changed region
-  const start = prefixLen;
-  const end = oldText.length - suffixLen;
-  const newTextContent = newText.slice(prefixLen, newText.length - suffixLen);
-
-  return [{
-    start,
-    end,
-    newText: newTextContent,
-  }];
-}
+import type { HostToUIMessage, MDenceSettings, ThemeOverrides } from '../types';
 
 export function App() {
   const [content, setContent] = useState<string | null>(null);
@@ -48,8 +16,8 @@ export function App() {
   const [themeOverrides, setThemeOverrides] = useState<ThemeOverrides | undefined>(undefined);
   const [error, setError] = useState<string | null>(null);
   const pendingAssetCallback = useRef<((relPath: string) => void) | null>(null);
-  // Track the last known document content for diff computation
-  const lastDocumentContent = useRef<string>('');
+  // Track the last content we asked the host to persist to avoid duplicate sends.
+  const lastRequestedContent = useRef<string>('');
 
   useEffect(() => {
     console.log('MDence App: Setting up message handler');
@@ -58,7 +26,7 @@ export function App() {
       switch (message.type) {
         case 'DOC_INIT':
           console.log('MDence App: Received DOC_INIT with', message.text?.length, 'chars');
-          lastDocumentContent.current = message.text;
+          lastRequestedContent.current = message.text;
           setContent(message.text);
           setSettings(message.settings);
           setAssetBaseUri(message.assetBaseUri);
@@ -67,7 +35,7 @@ export function App() {
           break;
 
         case 'DOC_CHANGED':
-          lastDocumentContent.current = message.text;
+          lastRequestedContent.current = message.text;
           setContent(message.text);
           break;
 
@@ -107,11 +75,9 @@ export function App() {
   }, [themeOverrides]);
 
   const handleChange = useCallback((markdown: string) => {
-    // Calculate diff and send minimal edits
-    const edits = computeMinimalEdits(lastDocumentContent.current, markdown);
-    if (edits.length > 0) {
-      lastDocumentContent.current = markdown;
-      applyTextEdits(edits, 'typing');
+    if (markdown !== lastRequestedContent.current) {
+      lastRequestedContent.current = markdown;
+      replaceDocumentText(markdown, 'typing');
     }
   }, []);
 

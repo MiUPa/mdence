@@ -8,7 +8,7 @@
     "color": "#161617",
     "theme": "dark"
   },
-  "version": "0.3.1",
+  "version": "0.3.2",
   "engines": {
     "vscode": "^1.85.0"
   },
@@ -264,7 +264,7 @@
     "build": "tsup src/extension.ts --format cjs --dts --outDir dist --external vscode",
     "dev": "tsup src/extension.ts --format cjs --watch --outDir dist --external vscode",
     "lint": "eslint src",
-    "package": "rm -rf .vsce-pkg && mkdir -p .vsce-pkg && cp -r package.json LICENSE README.md CHANGELOG.md .vscodeignore dist media .vsce-pkg/ && rm -f .vsce-pkg/dist/*.map && cd .vsce-pkg && vsce package --no-dependencies -o ../mdence.vsix && cd .. && rm -rf .vsce-pkg",
+    "package": "rm -rf .vsce-pkg && mkdir -p .vsce-pkg/media && cp package.json LICENSE README.md CHANGELOG.md .vscodeignore .vsce-pkg/ && cp -r dist .vsce-pkg/ && cp media/blocks-dark.svg media/blocks-light.svg media/code-dark.svg media/code-light.svg media/copy-dark.svg media/copy-light.svg media/icon.png .vsce-pkg/media/ && rm -f .vsce-pkg/dist/*.map && cd .vsce-pkg && vsce package --no-dependencies -o ../mdence.vsix && cd .. && rm -rf .vsce-pkg",
     "publish": "npm run package && vsce publish --packagePath mdence.vsix",
     "prepublishOnly": "npm run build"
   },
