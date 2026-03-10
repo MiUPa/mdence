@@ -35,7 +35,9 @@
   "homepage": "https://github.com/MiUPa/mdence",
   "license": "MIT",
   "main": "./dist/extension.js",
-  "activationEvents": [],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
   "contributes": {
     "customEditors": [
       {
@@ -79,6 +81,11 @@
           "light": "media/copy-light.svg",
           "dark": "media/copy-dark.svg"
         }
+      },
+      {
+        "command": "mdence.setAsDefaultMarkdownEditor",
+        "title": "Set as Default Markdown Editor",
+        "category": "MDence"
       },
       {
         "command": "mdence.insertBlock",

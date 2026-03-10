@@ -1,5 +1,10 @@
 import * as vscode from 'vscode';
 
+const MARKDOWN_EDITOR_ASSOCIATION_PATTERNS = ['*.md', '*.markdown'] as const;
+const DEFAULT_EDITOR_PROMPT_STATE_KEY = 'mdence.defaultEditorPromptHandled';
+
+type EditorAssociations = Record<string, string>;
+
 // Helper to get the current markdown file URI
 function getActiveMarkdownUri(): vscode.Uri | undefined {
   const activeEditor = vscode.window.activeTextEditor;
@@ -17,6 +22,93 @@ function getActiveMarkdownUri(): vscode.Uri | undefined {
   }
 
   return undefined;
+}
+
+function getMarkdownEditorAssociations(
+  associations: EditorAssociations | undefined
+): EditorAssociations {
+  const nextAssociations = { ...(associations ?? {}) };
+
+  for (const pattern of MARKDOWN_EDITOR_ASSOCIATION_PATTERNS) {
+    nextAssociations[pattern] = 'mdence.editor';
+  }
+
+  return nextAssociations;
+}
+
+function hasExplicitMarkdownEditorAssociation(
+  associations: EditorAssociations | undefined
+): boolean {
+  return MARKDOWN_EDITOR_ASSOCIATION_PATTERNS.some((pattern) => {
+    const editor = associations?.[pattern];
+    return typeof editor === 'string' && editor.trim().length > 0;
+  });
+}
+
+function hasExplicitMarkdownEditorAssociationAtAnyScope(
+  config: vscode.WorkspaceConfiguration
+): boolean {
+  const inspected = config.inspect<EditorAssociations>('editorAssociations');
+
+  if (!inspected) {
+    return false;
+  }
+
+  return [
+    inspected.globalValue,
+    inspected.workspaceValue,
+    inspected.workspaceFolderValue,
+  ].some(hasExplicitMarkdownEditorAssociation);
+}
+
+async function setAsDefaultMarkdownEditor(): Promise<void> {
+  const workbenchConfig = vscode.workspace.getConfiguration('workbench');
+  const currentAssociations =
+    workbenchConfig.get<EditorAssociations>('editorAssociations') ?? {};
+
+  await workbenchConfig.update(
+    'editorAssociations',
+    getMarkdownEditorAssociations(currentAssociations),
+    vscode.ConfigurationTarget.Global
+  );
+}
+
+export async function promptToSetDefaultMarkdownEditor(
+  context: vscode.ExtensionContext
+): Promise<void> {
+  const hasHandledPrompt = context.globalState.get<boolean>(
+    DEFAULT_EDITOR_PROMPT_STATE_KEY,
+    false
+  );
+  if (hasHandledPrompt) {
+    return;
+  }
+
+  const workbenchConfig = vscode.workspace.getConfiguration('workbench');
+  if (hasExplicitMarkdownEditorAssociationAtAnyScope(workbenchConfig)) {
+    await context.globalState.update(DEFAULT_EDITOR_PROMPT_STATE_KEY, true);
+    return;
+  }
+
+  const selection = await vscode.window.showInformationMessage(
+    'Set MDence as the default editor for Markdown files?',
+    'Set Default',
+    'Not Now'
+  );
+
+  if (selection === 'Set Default') {
+    try {
+      await setAsDefaultMarkdownEditor();
+      vscode.window.showInformationMessage(
+        'MDence is now the default editor for Markdown files.'
+      );
+    } catch (error) {
+      vscode.window.showErrorMessage('Failed to update Markdown editor associations');
+      return;
+    }
+  }
+
+  await context.globalState.update(DEFAULT_EDITOR_PROMPT_STATE_KEY, true);
 }
 
 export function registerCommands(context: vscode.ExtensionContext): void {
@@ -72,6 +164,21 @@ export function registerCommands(context: vscode.ExtensionContext): void {
         vscode.window.showInformationMessage('Copied to clipboard');
       } catch (error) {
         vscode.window.showErrorMessage('Failed to copy content');
+      }
+    })
+  );
+
+  // Set MDence as the default editor for Markdown files
+  context.subscriptions.push(
+    vscode.commands.registerCommand('mdence.setAsDefaultMarkdownEditor', async () => {
+      try {
+        await setAsDefaultMarkdownEditor();
+        await context.globalState.update(DEFAULT_EDITOR_PROMPT_STATE_KEY, true);
+        vscode.window.showInformationMessage(
+          'MDence is now the default editor for Markdown files.'
+        );
+      } catch (error) {
+        vscode.window.showErrorMessage('Failed to update Markdown editor associations');
       }
     })
   );
