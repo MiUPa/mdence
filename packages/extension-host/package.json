@@ -36,7 +36,7 @@
   "license": "MIT",
   "main": "./dist/extension.js",
   "activationEvents": [
-    "onStartupFinished"
+    "onLanguage:markdown"
   ],
   "contributes": {
     "customEditors": [

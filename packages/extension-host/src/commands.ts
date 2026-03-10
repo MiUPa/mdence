@@ -24,19 +24,7 @@ function getActiveMarkdownUri(): vscode.Uri | undefined {
   return undefined;
 }
 
-function getMarkdownEditorAssociations(
-  associations: EditorAssociations | undefined
-): EditorAssociations {
-  const nextAssociations = { ...(associations ?? {}) };
-
-  for (const pattern of MARKDOWN_EDITOR_ASSOCIATION_PATTERNS) {
-    nextAssociations[pattern] = 'mdence.editor';
-  }
-
-  return nextAssociations;
-}
-
-function hasExplicitMarkdownEditorAssociation(
+function hasMarkdownEditorAssociation(
   associations: EditorAssociations | undefined
 ): boolean {
   return MARKDOWN_EDITOR_ASSOCIATION_PATTERNS.some((pattern) => {
@@ -45,30 +33,40 @@ function hasExplicitMarkdownEditorAssociation(
   });
 }
 
-function hasExplicitMarkdownEditorAssociationAtAnyScope(
+function hasMarkdownAssociationAtCurrentScope(
   config: vscode.WorkspaceConfiguration
 ): boolean {
   const inspected = config.inspect<EditorAssociations>('editorAssociations');
-
   if (!inspected) {
     return false;
   }
 
   return [
-    inspected.globalValue,
-    inspected.workspaceValue,
     inspected.workspaceFolderValue,
-  ].some(hasExplicitMarkdownEditorAssociation);
+    inspected.workspaceValue,
+    inspected.globalValue,
+  ].some(hasMarkdownEditorAssociation);
+}
+
+function getNextGlobalEditorAssociations(
+  globalAssociations: EditorAssociations | undefined
+): EditorAssociations {
+  const nextAssociations = { ...(globalAssociations ?? {}) };
+
+  for (const pattern of MARKDOWN_EDITOR_ASSOCIATION_PATTERNS) {
+    nextAssociations[pattern] = 'mdence.editor';
+  }
+
+  return nextAssociations;
 }
 
 async function setAsDefaultMarkdownEditor(): Promise<void> {
   const workbenchConfig = vscode.workspace.getConfiguration('workbench');
-  const currentAssociations =
-    workbenchConfig.get<EditorAssociations>('editorAssociations') ?? {};
+  const inspected = workbenchConfig.inspect<EditorAssociations>('editorAssociations');
 
   await workbenchConfig.update(
     'editorAssociations',
-    getMarkdownEditorAssociations(currentAssociations),
+    getNextGlobalEditorAssociations(inspected?.globalValue),
     vscode.ConfigurationTarget.Global
   );
 }
@@ -85,8 +83,7 @@ export async function promptToSetDefaultMarkdownEditor(
   }
 
   const workbenchConfig = vscode.workspace.getConfiguration('workbench');
-  if (hasExplicitMarkdownEditorAssociationAtAnyScope(workbenchConfig)) {
-    await context.globalState.update(DEFAULT_EDITOR_PROMPT_STATE_KEY, true);
+  if (hasMarkdownAssociationAtCurrentScope(workbenchConfig)) {
     return;
   }
 
@@ -96,6 +93,9 @@ export async function promptToSetDefaultMarkdownEditor(
     'Not Now'
   );
 
+  if (!selection) {
+    return;
+  }
   if (selection === 'Set Default') {
     try {
       await setAsDefaultMarkdownEditor();

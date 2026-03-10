@@ -112,7 +112,7 @@ Leave any setting empty to use the default.
 - **MDence: Open as Raw Markdown** — Switch to the plain text editor
 - **MDence: Open as MDence** — Open a Markdown file in MDence
 - **MDence: Copy Markdown Content** — Copy the document to clipboard
-- **MDence: Set as Default Markdown Editor** — Register MDence as the default editor for `.md` and `.markdown`
+- **MDence: Set as Default Markdown Editor** — Save MDence as your global default for `.md` and `.markdown`
 
 ## Settings
 
