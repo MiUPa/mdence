@@ -2,6 +2,7 @@
 
 ## 0.3.3
 
+- Redesigned the Marketplace icon with the new MDence visual identity
 - Updated DOMPurify to 3.3.2 in the MDence webview bundle
 - Refreshed build dependencies, including esbuild 0.25.0
 - Updated website security lockfiles and removed a redundant nested website manifest

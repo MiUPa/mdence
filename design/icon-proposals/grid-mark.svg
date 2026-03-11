@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">MDence Grid Mark</title>
+  <desc id="desc">A knowledge-grid style icon with an M bridge.</desc>
+  <defs>
+    <linearGradient id="bg" x1="116" y1="82" x2="412" y2="442" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#163754" />
+      <stop offset="1" stop-color="#0a1726" />
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#030e18" flood-opacity="0.3" />
+    </filter>
+  </defs>
+
+  <rect x="40" y="40" width="432" height="432" rx="112" fill="url(#bg)" />
+
+  <g filter="url(#shadow)">
+    <rect x="122" y="120" width="112" height="112" rx="30" fill="#f7fbff" />
+    <rect x="278" y="120" width="112" height="112" rx="30" fill="#e6eff5" />
+    <rect x="122" y="276" width="112" height="112" rx="30" fill="#d5e2eb" />
+    <rect x="278" y="276" width="112" height="112" rx="30" fill="#c1d2de" />
+  </g>
+
+  <path
+    d="M156 332V186c0-11 9-20 20-20h2c7 0 13 4 17 10l61 91 61-91c4-6 10-10 17-10h2c11 0 20 9 20 20v146"
+    fill="none"
+    stroke="#0c2236"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    stroke-width="28"
+  />
+  <circle cx="348" cy="345" r="20" fill="#efb03d" />
+</svg>

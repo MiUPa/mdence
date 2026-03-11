@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MDence Icon Proposals</title>
+    <style>
+      :root {
+        --bg: #e8edf2;
+        --card: rgba(255, 255, 255, 0.82);
+        --text: #10253a;
+        --muted: #587186;
+        --line: rgba(16, 37, 58, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Avenir Next", "Segoe UI", sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(circle at top left, rgba(29, 79, 104, 0.12), transparent 32%),
+          linear-gradient(180deg, #eef3f7 0%, #dde6ee 100%);
+      }
+
+      main {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 48px 28px 64px;
+      }
+
+      h1 {
+        margin: 0 0 12px;
+        font-size: clamp(34px, 5vw, 58px);
+        line-height: 1;
+        letter-spacing: -0.04em;
+      }
+
+      p.lead {
+        margin: 0 0 32px;
+        max-width: 760px;
+        color: var(--muted);
+        font-size: 18px;
+        line-height: 1.6;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 22px;
+      }
+
+      .card {
+        padding: 22px;
+        border: 1px solid var(--line);
+        border-radius: 28px;
+        background: var(--card);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 22px 40px rgba(18, 33, 49, 0.08);
+      }
+
+      .preview {
+        display: grid;
+        place-items: center;
+        min-height: 290px;
+        margin-bottom: 16px;
+        border-radius: 22px;
+        background:
+          linear-gradient(180deg, rgba(18, 33, 49, 0.03), rgba(18, 33, 49, 0.08)),
+          repeating-linear-gradient(
+            45deg,
+            rgba(255, 255, 255, 0.4),
+            rgba(255, 255, 255, 0.4) 16px,
+            rgba(18, 33, 49, 0.03) 16px,
+            rgba(18, 33, 49, 0.03) 32px
+          );
+      }
+
+      .preview img {
+        width: 220px;
+        height: 220px;
+      }
+
+      .marketplace {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        margin-top: 18px;
+        padding: 16px 18px;
+        border-radius: 20px;
+        background: #ffffff;
+        border: 1px solid rgba(16, 37, 58, 0.08);
+      }
+
+      .marketplace img {
+        width: 96px;
+        height: 96px;
+        border-radius: 22px;
+        display: block;
+      }
+
+      .marketplace strong {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 16px;
+      }
+
+      .marketplace span {
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .sizes {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        margin: 14px 0 0;
+      }
+
+      .sizes img {
+        display: block;
+        border-radius: 16px;
+        background: #d8e2eb;
+        padding: 8px;
+      }
+
+      h2 {
+        margin: 0;
+        font-size: 24px;
+        letter-spacing: -0.03em;
+      }
+
+      p.note {
+        margin: 10px 0 0;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      code {
+        padding: 2px 6px;
+        border-radius: 999px;
+        background: rgba(15, 39, 64, 0.08);
+        font-size: 0.95em;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>MDence Icon Concepts</h1>
+      <p class="lead">
+        Confluence の「整理された知識空間」寄りにしつつ、Atlassian の既存ブランドはなぞらない方向の
+        3 案です。まずは <code>ページ感</code>、<code>構造感</code>、<code>知識ベース感</code> のどれが
+        近いかを見るための試作です。
+      </p>
+
+      <section class="grid">
+        <article class="card">
+          <div class="preview">
+            <img src="./page-mark.svg" alt="Page Mark proposal" />
+          </div>
+          <h2>01. Page Mark</h2>
+          <p class="note">
+            一番素直な本命案です。文書ページを前面に出して、中央の M と右下のノードで
+            「Markdown + knowledge base」を表現しています。
+          </p>
+          <div class="sizes">
+            <img src="./page-mark.svg" alt="" width="88" height="88" />
+            <img src="./page-mark.svg" alt="" width="56" height="56" />
+            <img src="./page-mark.svg" alt="" width="32" height="32" />
+          </div>
+          <div class="marketplace">
+            <img src="./page-mark.svg" alt="" />
+            <div>
+              <strong>Marketplace Mock</strong>
+              <span>白背景の一覧で見える実際の余白感</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="preview">
+            <img src="./stack-mark.svg" alt="Stack Mark proposal" />
+          </div>
+          <h2>02. Stack Mark</h2>
+          <p class="note">
+            複数のページや階層を見せる案です。Confluence っぽい「情報を積む場所」感は強いですが、
+            ややプロダクトロゴ寄りの見え方になります。
+          </p>
+          <div class="sizes">
+            <img src="./stack-mark.svg" alt="" width="88" height="88" />
+            <img src="./stack-mark.svg" alt="" width="56" height="56" />
+            <img src="./stack-mark.svg" alt="" width="32" height="32" />
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="preview">
+            <img src="./grid-mark.svg" alt="Grid Mark proposal" />
+          </div>
+          <h2>03. Grid Mark</h2>
+          <p class="note">
+            情報の整理棚や wiki の構造を感じさせる案です。拡張の block editor 性は出ますが、
+            小さいサイズでは少し込み入って見えるかもしれません。
+          </p>
+          <div class="sizes">
+            <img src="./grid-mark.svg" alt="" width="88" height="88" />
+            <img src="./grid-mark.svg" alt="" width="56" height="56" />
+            <img src="./grid-mark.svg" alt="" width="32" height="32" />
+          </div>
+        </article>
+      </section>
+    </main>
+  </body>
+</html>

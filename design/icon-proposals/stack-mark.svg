@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">MDence Stack Mark</title>
+  <desc id="desc">Layered content cards with a strong M overlay.</desc>
+  <defs>
+    <linearGradient id="bg" x1="112" y1="72" x2="410" y2="446" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#143654" />
+      <stop offset="1" stop-color="#081a2b" />
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="18" stdDeviation="20" flood-color="#020b13" flood-opacity="0.34" />
+    </filter>
+  </defs>
+
+  <rect x="40" y="40" width="432" height="432" rx="112" fill="url(#bg)" />
+
+  <g filter="url(#shadow)">
+    <rect x="126" y="126" width="260" height="78" rx="28" fill="#f7fbff" opacity="0.96" />
+    <rect x="126" y="218" width="260" height="78" rx="28" fill="#dfeaf2" opacity="0.96" />
+    <rect x="126" y="310" width="260" height="78" rx="28" fill="#bfd2df" opacity="0.98" />
+  </g>
+
+  <path
+    d="M154 336V176c0-10 8-18 18-18h10c7 0 13 4 16 10l58 96 58-96c3-6 9-10 16-10h10c10 0 18 8 18 18v160"
+    fill="none"
+    stroke="#0b2237"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    stroke-width="30"
+  />
+  <circle cx="350" cy="337" r="22" fill="#f1af38" />
+</svg>
