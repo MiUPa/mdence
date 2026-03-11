@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.3
+
+- Updated DOMPurify to 3.3.2 in the MDence webview bundle
+- Refreshed build dependencies, including esbuild 0.25.0
+- Updated website security lockfiles and removed a redundant nested website manifest
+
 ## 0.3.2
 
 - Improved Markdown import for paragraphs that mix text and images
